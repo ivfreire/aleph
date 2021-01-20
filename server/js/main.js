@@ -1,9 +1,60 @@
-const express = require('express');
+const fs = require('fs');
 
-const app = express();
+function main(config) {
+	const express	= require('express'),
+		session		= require('express-session'),
+		http		= require('http'),
+		socketio	= require('socket.io'),
+		path		= require('path'),
+		bodyParser	= require('body-parser'),
+		Aleph		= require('./aleph');
 
-app.get('/', (req, res) => {
-	res.send('<h1>Hello world!</h1>');
+	const app		= express(),
+		server		= http.Server(app),
+		io			= socketio(server);
+	
+	app.use(session({
+		secret: config.secret,
+		resave: true,
+		saveUninitialized: false,
+		cookie: {
+			httpOnly: true,
+			secure: false,
+			maxAge: 2 * 3600
+		}
+	}));
+
+	app.use(bodyParser.urlencoded({ extended: true }));
+
+	Aleph.init(config);
+
+	io.on('connection', Aleph.events.io);
+
+	app.get('/', (req, res) => {
+		res.sendFile(path.join(__dirname, '../../client', 'index.html'));
+	});
+	
+	server.listen(config.port, () => console.log(`Server has started on http://localhost:${config.port}/`));
+}
+
+function loadConfigFile(path, callback) {
+	fs.readFile(path, 'utf-8', function(err, data) {
+		if (err) {
+			console.error(`Could not load config file: ${err.path}`);
+			callback(null);
+		} else {
+			callback(JSON.parse(data));
+		}
+	});
+}
+
+const configPath = './server/config.json';
+
+loadConfigFile(configPath, function (config) {
+	if (config) {
+		main(config);
+	} else {
+		console.error('Server cannot start without any config file.');
+		process.exit(1);
+	}
 });
-
-app.listen(3000, () => console.log('Server has started on http://localhost:3000/'));
