@@ -31,7 +31,7 @@ const Aleph = require('./aleph');
 io.on('connection', (socket) => {
 	Aleph.join(socket, socket.request.session.username);
 	socket.on('game-event', (data) => Aleph.events.handler(socket, data, socket.request.session.username));
-	socket.on('disconnect', () => Aleph.left(socket.username));
+	socket.on('disconnect', () => Aleph.left(socket, socket.request.session.username));
 });
 
 

@@ -10,8 +10,9 @@ const Aleph = {
 		});
 		socket.broadcast.emit('game-event', { type: 'join', player: username, position: this.players[username] });
 	},
-	left: function(username) {
+	left: function(socket, username) {
 		if (username in this.players) delete this.players[username];
+		socket.broadcast.emit('game-event', { type: 'left', player: username });
 	},
 	events: {
 		handler: function(socket, ev, username) {

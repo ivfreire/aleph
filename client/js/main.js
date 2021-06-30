@@ -64,6 +64,9 @@ const World = {
 	},
 	join: function(data) {
 		this.players[data.player] = data.position;
+	},
+	left: function(data) {
+		if (data.player in this.players) delete this.players[data.player];
 	}
 }
 
@@ -111,8 +114,8 @@ const Game = {
 		server: function(ev) {
 			if (ev.type == 'move')
 				if (ev.player in World.players) World.players[ev.player] = ev.position;
-			if (ev.type == 'join')
-				World.join(ev);
+			if (ev.type == 'join') World.join(ev);
+			if (ev.type == 'left') World.left(ev);
 		}
 	}
 }
