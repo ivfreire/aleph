@@ -1,11 +1,17 @@
+const Map = require('./map.js');
+
 const Aleph = {
 	players: {},
 	init: function() {
+		this.map = new Map('maps/test.json');
 	},
 	join: function(socket, username) {
-		this.players[username] = [ 0, 0 ];
+		this.players[username] = [ 200, 200 ];
 		socket.emit('load', { 
-			player: Aleph.players[socket.request.session.username],
+			player: {
+				username: username,
+				position: Aleph.players[username]
+			},
 			players: Aleph.players
 		});
 		socket.broadcast.emit('game-event', { type: 'join', player: username, position: this.players[username] });

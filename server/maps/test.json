@@ -1,0 +1,19 @@
+{
+	"title": "Test Map",
+	"width": 4,
+	"height": 4,
+	"tilewidth": 60,
+	"tileheight": 60,
+	"layers": [
+		{
+			"title": "Ground",
+			"type": "tilelayer",
+			"data": [
+				0, 0, 0, 0,
+				1, 2, 3, 4,
+				0, 0, 0, 0,
+				4, 4, 4, 4
+			]
+		}
+	]
+}

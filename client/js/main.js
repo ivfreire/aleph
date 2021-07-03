@@ -17,7 +17,8 @@ const Player = {
 	size: [ 50, 50 ],
 	speed: 300,
 	load: function(data) {
-		this.dynamics.position = data;
+		this.username = data.username;
+		this.dynamics.position = data.position;
 	},
 	update: function(dtime) {
 		this.dynamics.position[0] += this.dynamics.velocity[0] * dtime;
@@ -46,6 +47,7 @@ const Player = {
 const World = {
 	init: function() {
 		this.players = {};
+		this.camera = [ 0, 0, 0, 0 ];
 	},
 	render: function(ctx) {
 		ctx.fillStyle = 'red';
@@ -58,7 +60,7 @@ const World = {
 	loaders: {
 		players: function(data) {
 			for (const player in data)
-				if (player != Game.username)
+				if (player != Player.username)
 					World.players[player] = data[player];
 		}
 	},
@@ -108,12 +110,11 @@ const Game = {
 	events: {
 		handler: function(ev) {
 			if (Game.state == 1) {
-				if (ev.type == 'keydown' || ev.type == 'keyup') Player.handler(ev);
+				if (ev.type == 'keydown' || ev.type == 'keyup' || ev.type == 'mousedown') Player.handler(ev);
 			}
 		},
 		server: function(ev) {
-			if (ev.type == 'move')
-				if (ev.player in World.players) World.players[ev.player] = ev.position;
+			if (ev.type == 'move') if (ev.player in World.players) World.players[ev.player] = ev.position;
 			if (ev.type == 'join') World.join(ev);
 			if (ev.type == 'left') World.left(ev);
 		}
@@ -127,3 +128,4 @@ window.onload = () => {
 
 window.onkeydown = Game.events.handler;
 window.onkeyup = Game.events.handler;
+window.onmousedown = Game.events.handler;

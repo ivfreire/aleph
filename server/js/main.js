@@ -3,6 +3,7 @@ const session = require('express-session');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -58,6 +59,6 @@ app.get('/whoami', (req, res) => {
 });
 
 server.listen(port, () => {
-	console.log("The server has started!");
+	console.log(`Server is running on http://localhost:${port}/`);
 	Aleph.init();
 });
