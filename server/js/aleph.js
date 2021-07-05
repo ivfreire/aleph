@@ -3,7 +3,7 @@ const Map = require('./map.js');
 const Aleph = {
 	players: {},
 	init: function() {
-		this.map = new Map('maps/test.json');
+		this.map = new Map('Map 0', '../maps/map_0.json');
 	},
 	join: function(socket, username) {
 		this.players[username] = [ 200, 200 ];
@@ -12,7 +12,9 @@ const Aleph = {
 				username: username,
 				position: Aleph.players[username]
 			},
-			players: Aleph.players
+			players: Aleph.players,
+			map: this.map.getMap(),
+			chunk: this.map.getChunk([ 0, 0 ])
 		});
 		socket.broadcast.emit('game-event', { type: 'join', player: username, position: this.players[username] });
 	},

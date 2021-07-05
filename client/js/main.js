@@ -62,6 +62,12 @@ const World = {
 			for (const player in data)
 				if (player != Player.username)
 					World.players[player] = data[player];
+		},
+		map: function(map) {
+			World.map = map;
+		},
+		chunk: function(chunk) {
+			World.map.layers = chunk;
 		}
 	},
 	join: function(data) {
@@ -88,14 +94,19 @@ const Game = {
 		World.init();
 
 		this.state = 1;
+	},
+	start: function() {
 		setInterval(() => {
 			this.update(1.0 / this.FPS);
 			this.render(Canvas.context)
 		}, 1000 / this.FPS, false);
 	},
 	load: function(data) {
-		if ('player' in data) Player.load(data['player']);
-		if ('players' in data) World.loaders.players(data['players']);
+		Player.load(data['player']);
+		World.loaders.players(data['players']);
+		World.loaders.map(data['map']);
+		World.loaders.chunk(data['chunk']);
+		this.start();
 	},
 	update: function(dtime) {
 		if (this.state == 1) {
